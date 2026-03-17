@@ -1,6 +1,6 @@
 # Cache Demo
 
-This project shows how loop order changes matrix multiplication performance.
+This project shows how loop order changes matrix multiplication performance. Heavily inspired by: *https://www.youtube.com/watch?v=XSAIgL4bweE*
 
 - `cachedemo.c` runs the cache-friendly `i, k, j` version.
 - `solution/row_major.c` is the cache-friendly `i, k, j` example.
