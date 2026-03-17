@@ -13,6 +13,13 @@ This project shows how loop order changes matrix multiplication performance. Hea
 make all
 ```
 
+Override the matrix size at build time with `SIZE`:
+
+```sh
+make clean
+make all SIZE=1024
+```
+
 This produces:
 
 - `./cachedemo`
@@ -25,6 +32,13 @@ Run the default demo:
 
 ```sh
 make run
+```
+
+Or with a custom size:
+
+```sh
+make clean
+make run SIZE=1024
 ```
 
 Or run a binary directly:
@@ -53,6 +67,14 @@ make bench-row
 make bench-col
 ```
 
+You can combine those with a custom size too:
+
+```sh
+make clean
+make bench-row SIZE=1024
+make bench-col SIZE=1024
+```
+
 ## Expected Result
 
 `row_major` should usually run much faster than `col_major`.
@@ -67,4 +89,5 @@ The important difference is loop order:
 ## Notes
 
 - This is intended for a Linux/Ubuntu-style environment such as a Docker container.
+- If you change `SIZE`, rebuild first so the binaries match the new setting.
 - The checksum output is kept so the compiler cannot optimize the work away.

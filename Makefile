@@ -1,6 +1,7 @@
 CC ?= gcc
+SIZE ?= 512
 CFLAGS := -O3 -Wall -Wextra -std=c11
-CPPFLAGS := -DSIZE=1024
+CPPFLAGS := -DSIZE=$(SIZE)
 BINARIES := cachedemo row_major col_major
 
 .PHONY: all run bench bench-row bench-col clean
