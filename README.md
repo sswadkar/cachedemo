@@ -1,10 +1,10 @@
 # Cache Demo
 
-This project shows how memory access order affects runtime.
+This project shows how loop order changes matrix multiplication performance.
 
-- `cachedemo.c` is the main demo program.
-- `solution/row_major.c` walks the matrix in row-major order.
-- `solution/col_major.c` walks the matrix in column-major order.
+- `cachedemo.c` runs the cache-friendly `i, k, j` version.
+- `solution/row_major.c` is the cache-friendly `i, k, j` example.
+- `solution/col_major.c` is the cache-unfriendly `j, k, i` example.
 - `bench.sh` times any executable you pass to it and prints the runtime in seconds and milliseconds.
 
 ## Build
@@ -55,9 +55,14 @@ make bench-col
 
 ## Expected Result
 
-`row_major` should usually run faster than `col_major` because C stores 2D array data in row-major order, so row-wise traversal has better cache locality.
+`row_major` should usually run much faster than `col_major`.
 
-`cachedemo` matches the row-major version.
+The important difference is loop order:
+
+- `i, k, j` reuses `a[i][k]` and walks across rows of `b` and `out`, which is cache-friendly in C.
+- `j, k, i` walks down columns of `out` and `a`, which causes much worse locality.
+
+`cachedemo` matches the fast `i, k, j` version.
 
 ## Notes
 

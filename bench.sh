@@ -22,25 +22,7 @@ time_once() {
                 'BEGIN { printf "%.3f", (end - start) / 1000000000 }'
 }
 
-best_time() {
-        best=""
-
-        "$binary" >/dev/null
-
-        for _ in 1 2 3; do
-                current="$(time_once)"
-                if [ -z "$best" ]; then
-                        best="$current"
-                else
-                        best="$(awk -v a="$best" -v b="$current" \
-                                'BEGIN { if (a < b) printf "%s", a; else printf "%s", b }')"
-                fi
-        done
-
-        printf "%s" "$best"
-}
-
-seconds="$(best_time)"
+seconds="$(time_once)"
 milliseconds="$(awk -v seconds="$seconds" 'BEGIN { printf "%.3f", seconds * 1000 }')"
 
 printf "Binary: %s\n" "$binary"

@@ -1,51 +1,78 @@
-// credit to magicalbat on youtube
-// https://www.youtube.com/watch?v=XSAIgL4bweE
+// Cache-friendly matrix multiply: i, k, j.
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 
-#define SIZE (1024)
-#define TRIALS (1000)
+#ifndef SIZE
+#define SIZE 256
+#endif
 
 struct matrix {
         int rows, cols;
         float *data;
 };
 
-static float mat_sum(struct matrix *mat) {
+static void init_matrix(struct matrix *mat) {
+        mat->rows = SIZE;
+        mat->cols = SIZE;
+        mat->data = malloc(sizeof(float) * SIZE * SIZE);
+        if (mat->data == NULL) {
+                fprintf(stderr, "failed to allocate matrix data\n");
+                exit(1);
+        }
+
+        for (int i = 0; i < SIZE * SIZE; i++) {
+                mat->data[i] = ((float) rand()) / RAND_MAX;
+        }
+}
+
+static void free_matrix(struct matrix *mat) {
+        free(mat->data);
+}
+
+static float checksum(const struct matrix *mat) {
         float sum = 0.0f;
 
-        for (int row = 0; row < mat->rows; row++) {
-                for (int col = 0; col < mat->cols; col++) {
-                        sum += mat->data[col + row * mat->cols];
-                }
+        for (int i = 0; i < mat->rows * mat->cols; i++) {
+                sum += mat->data[i];
         }
 
         return sum;
 }
 
+static void mat_mul(struct matrix *out,
+                    const struct matrix *a,
+                    const struct matrix *b) {
+        for (int i = 0; i < out->rows * out->cols; i++) {
+                out->data[i] = 0.0f;
+        }
+
+        for (int i = 0; i < out->rows; i++) {
+                for (int k = 0; k < a->cols; k++) {
+                        float a_ik = a->data[k + i * a->cols];
+                        for (int j = 0; j < out->cols; j++) {
+                                out->data[j + i * out->cols] +=
+                                        a_ik * b->data[j + k * b->cols];
+                        }
+                }
+        }
+}
+
 int main(void) {
-        struct matrix A;
-        float sum = 0.0f;
+        struct matrix a;
+        struct matrix b;
+        struct matrix out;
 
-        A.cols = SIZE;
-        A.rows = SIZE;
-        A.data = malloc(sizeof(float) * SIZE * SIZE);
-        if (A.data == NULL) {
-                fprintf(stderr, "failed to allocate matrix data\n");
-                return 1;
-        }
+        init_matrix(&a);
+        init_matrix(&b);
+        init_matrix(&out);
 
-        for (int i = 0; i < SIZE * SIZE; i++) {
-                A.data[i] = ((float) rand()) / RAND_MAX;
-        }
+        mat_mul(&out, &a, &b);
+        printf("%.0f\n", checksum(&out));
 
-        for (int i = 0; i < TRIALS; i++) {
-                sum += mat_sum(&A);
-        }
-
-        printf("%.0f\n", sum);
-        free(A.data);
+        free_matrix(&a);
+        free_matrix(&b);
+        free_matrix(&out);
         return 0;
 }
