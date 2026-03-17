@@ -5,7 +5,7 @@ This project shows how loop order changes matrix multiplication performance. Hea
 - `cachedemo.c` runs the cache-friendly `i, k, j` version.
 - `solution/row_major.c` is the cache-friendly `i, k, j` example.
 - `solution/col_major.c` is the cache-unfriendly `j, k, i` example.
-- `bench.sh` times any executable you pass to it and prints the runtime in seconds and milliseconds.
+- `bench.sh` runs a binary 3 times and reports the median runtime in seconds and milliseconds.
 
 ## Build
 

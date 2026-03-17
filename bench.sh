@@ -22,9 +22,17 @@ time_once() {
                 'BEGIN { printf "%.3f", (end - start) / 1000000000 }'
 }
 
-seconds="$(time_once)"
+median_time() {
+        run1="$(time_once)"
+        run2="$(time_once)"
+        run3="$(time_once)"
+
+        printf "%s\n%s\n%s\n" "$run1" "$run2" "$run3" | sort -n | sed -n '2p'
+}
+
+seconds="$(median_time)"
 milliseconds="$(awk -v seconds="$seconds" 'BEGIN { printf "%.3f", seconds * 1000 }')"
 
 printf "Binary: %s\n" "$binary"
-printf "Time:   %s s\n" "$seconds"
-printf "Time:   %s ms\n" "$milliseconds"
+printf "Median: %s s\n" "$seconds"
+printf "Median: %s ms\n" "$milliseconds"

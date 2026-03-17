@@ -46,15 +46,20 @@ static void mat_mul(struct matrix *out,
                 out->data[i] = 0.0f;
         }
 
-        for (int i = 0; i < out->rows; i++) {
+        // for col in B, for row in A
+        // for row in A, for col in B
+        for (int i = 0; i < a->rows; i++) {
                 for (int k = 0; k < a->cols; k++) {
-                        float a_ik = a->data[k + i * a->cols];
-                        for (int j = 0; j < out->cols; j++) {
-                                out->data[j + i * out->cols] +=
-                                        a_ik * b->data[j + k * b->cols];
+                        for (int j = 0; j < b->cols; j++) {
+                                // a[i][k]
+                                float a_ik = a->data[k + i * a->cols];
+                                // b[k][j]
+                                float b_kj = b->data[j + k * b->cols];
+                                out->data[j + i * b->cols] += a_ik * b_kj;
                         }
                 }
         }
+
 }
 
 int main(void) {
